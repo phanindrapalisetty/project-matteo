@@ -3,16 +3,20 @@ import streamlit as st
 import os 
 import requests 
 import json 
+from dotenv import load_dotenv
+import os
 
+# Access the variables
+project_name = os.getenv("PROJECT_NAME")
 
 def main():
     st.set_page_config(
-        page_title="Project Matteo",
+        page_title= project_name,
         page_icon=":whale:",
         initial_sidebar_state="auto"
         ) 
 
-    st.title('Project Matteo')
+    st.title(project_name)
     _help = 'Something as a helper text'
 
     label = 'Select Something'
