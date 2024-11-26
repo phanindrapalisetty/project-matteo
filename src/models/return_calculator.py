@@ -1,7 +1,6 @@
 #%%
 from pydantic import BaseModel, Field 
-import typing 
-import math
+
 
 class ReturnCalculator(BaseModel):
     monthly_amount: int = Field(gt=0, le=1000000)

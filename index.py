@@ -1,13 +1,7 @@
 #%%
 import streamlit as st 
-import os 
-import requests 
-import json 
-from dotenv import load_dotenv
 import os
 from src.models import return_calculator
-import plotly.express as px
-import pandas as pd
 
 # Access the variables
 project_name = os.getenv("PROJECT_NAME")

@@ -1,0 +1,4 @@
+dotenv
+plotly 
+pandas 
+pydantic
