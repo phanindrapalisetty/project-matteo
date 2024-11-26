@@ -117,4 +117,9 @@ st.plotly_chart(fig, use_container_width=True)
 
 
 #%%
+dict_ = {"monthly_amount":25000,"invested_amount":300000,"return_amount":320233,"profit_amount":20233,"return_pct":6.74,"annualised_returns":6.74}
 
+import pandas as pd 
+df = pd.DataFrame(dict_.items(), columns=['key_', 'value_'])
+print(df[df['key_'].isin(['invested_amount', 'profit_amount'])])
+# %%

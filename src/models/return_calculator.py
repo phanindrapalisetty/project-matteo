@@ -9,7 +9,7 @@ class ReturnCalculator(BaseModel):
     tenure_in_months: int = Field(gt=0, le=540)
     is_compounded: bool = Field(default=1)
     
-    def get_return_amount(self) -> int:
+    def get_total_investment_amount(self) -> int:
         monthly_return = self.annual_return/12/100
         if self.is_compounded:
             multipler = ((((1+monthly_return)**self.tenure_in_months) - 1)* (1+monthly_return))/monthly_return
@@ -25,14 +25,14 @@ class ReturnCalculator(BaseModel):
 class SIPCalculator(ReturnCalculator):
     def get_return_amount(self) -> dict:
         invested_amount = super().get_invested_amount()
-        return_amount = super().get_return_amount()
-        return_pct = round((return_amount-invested_amount)*100/invested_amount, 2)
+        total_amount = super().get_total_investment_amount()
+        return_pct = round((total_amount-invested_amount)*100/invested_amount, 2)
         annualised_returns = round(return_pct/(self.tenure_in_months/12), 2)
         return {
             "monthly_amount": self.monthly_amount,
             "invested_amount": invested_amount,
-            "return_amount": return_amount,
-            "profit_amount": return_amount - invested_amount,
+            "total_amount": total_amount,
+            "return_amount": total_amount - invested_amount,
             "return_pct": return_pct, 
             "annualised_returns": annualised_returns
         }

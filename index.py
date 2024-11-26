@@ -6,9 +6,30 @@ import json
 from dotenv import load_dotenv
 import os
 from src.models import return_calculator
+import plotly.express as px
+import pandas as pd
 
 # Access the variables
 project_name = os.getenv("PROJECT_NAME")
+
+def get_pie_chart(dict_):
+    import plotly.express as px 
+    
+    import pandas as pd 
+    df = pd.DataFrame(dict_.items(), columns=['key_', 'value_'])
+    filtered_df = df[df['key_'].isin(['invested_amount', 'return_amount'])]
+    fig = px.pie(filtered_df, values='value_', names='key_', hole=0.5)
+    fig.update_layout(legend=dict(
+        entrywidth=70,
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
+
+    return fig 
+
+
 
 # Function to create a synchronized slider and text box
 def synced_input(label, min_value, max_value, default_value, key_prefix, step):
@@ -80,7 +101,26 @@ def main():
         initial_sidebar_state="auto"
         ) 
     
-    st.title(project_name)
+    st.title("Monthly SIP Calculator")
+    with st.sidebar:
+        st.write("Hi there, Welcome to **Project Matteo**")
+
+        st.markdown(
+            """
+                *This is a fun-to-hobby project developing a series of tools which are used in everyday life. Something to think of are:*
+
+                - SIP/Investment Calculator
+                - Investment Forecast Tool
+                - OCR to extract info from images and pdfs
+                - JSON parser
+
+                You can visit this github repo [here](https://github.com/phanindrapalisetty/project-matteo).
+                Give a thumbs up if you like it. 
+
+                PS: Things are still in progress; you explore the tools which are published till then.
+            """
+        )
+
 
     col1, col2 = st.columns([3, 2])
 
@@ -108,7 +148,7 @@ def main():
                 tenure = st.number_input(label='Tenure', min_value=1, max_value=tenure_max_value, key = 'tenure', label_visibility='hidden')
             elif frequency_of_tenure == 'Months':
                 tenure_max_value = 30*12
-                tenure = st.number_input(label='Tenure', min_value=12, max_value=tenure_max_value, key = 'tenure', label_visibility='hidden')
+                tenure = st.number_input(label='Tenure', min_value=1, max_value=tenure_max_value, key = 'tenure', label_visibility='hidden')
             else:
                 tenure = None
                 # st.write(tenure)
@@ -116,14 +156,26 @@ def main():
         tenure_in_months = tenure*12 if frequency_of_tenure == 'Years' else tenure
     
     with col2:
-        st.markdown('### Split of Earnings')
+        # st.markdown('### Split of Earnings')
 
         if interest_rate and principal_amount and frequency_of_tenure:
             sip = return_calculator.SIPCalculator(monthly_amount=principal_amount, annual_return=interest_rate, tenure_in_months=tenure_in_months)
-            st.write(sip.get_return_amount())
+            sip_return = sip.get_return_amount()
+            # st.write(sip_return)
+            pie = get_pie_chart(sip_return)
+            st.plotly_chart(pie, use_container_width=True)
         else:
             st.write('Please select inputs')
-
+    
+    col3, col4, col5 = st.columns(3)
+    if interest_rate and principal_amount and frequency_of_tenure:
+        with col3:
+            st.write('Total Investment Value: ', sip_return['total_amount'])
+        with col4:
+            st.write('Invested Amount: ', sip_return['invested_amount'])
+        with col5:
+            st.write('Returns Earned: ', sip_return['return_amount'])
+    
     
 
 if __name__ == '__main__':
