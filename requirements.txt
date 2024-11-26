@@ -2,3 +2,4 @@ dotenv
 plotly 
 pandas 
 pydantic
+python-dotenv
