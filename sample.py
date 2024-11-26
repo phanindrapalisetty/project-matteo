@@ -114,3 +114,7 @@ fig.update_layout(title='Forecast Salary, Expenses & Savings Over the Years',
                    yaxis_title='Amount($)')
 
 st.plotly_chart(fig, use_container_width=True)
+
+
+#%%
+
